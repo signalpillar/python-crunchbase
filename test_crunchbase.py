@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from crunchbase import CrunchBase
 import doctest
 doctest.testfile('README.md', verbose=False)
@@ -16,3 +17,7 @@ print company['funding_rounds'][1]['investments']#['financial_org']
 investor  = cb.listInvestorPortfolio('Kapor Capital')
 for i in investor:
 	print i
+=======
+import doctest
+doctest.testfile('README.md', verbose=False)
+>>>>>>> 9e524f1f02a9385cbd91979f56c63399c4abecef
