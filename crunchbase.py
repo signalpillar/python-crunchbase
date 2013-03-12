@@ -2,7 +2,7 @@
 Python library for the CrunchBase api.
 Copyright (c) 2010 Apurva Mehta <mehta.apurva@gmail.com> for CrunchBase class
 
-Edits made by Alexander Pease <alexander@usv.com> to... e
+Edits made by Alexander Pease <alexander@usv.com> to...
   * Ensure compliance with 2013 API key requirement
   * Fix namespace conventions (ex: 'Kapor Capital' is sent as 'kapor+capital')
   * Functions requiring parsing of CrunchBase-return JSON (ex. list a company's investors)
