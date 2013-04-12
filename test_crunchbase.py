@@ -1,4 +1,4 @@
-from crunchbase import CrunchBase
+from crunchbase import CrunchBase #may be outdated. switched all code to __init__.py
 import doctest
 doctest.testfile('README.md', verbose=False)
 
