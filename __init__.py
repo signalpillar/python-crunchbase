@@ -69,7 +69,7 @@ class CrunchBase:
       return self.__cache
 
 
-  def search(self, query, page = 1):
+  def search(self, query, page = '1'):
     '''This returns result of search query in JSON format'''
     url = API_URL + 'search.js?api_key=' + self.api_key + '&query=' + query + '&page=' + page
     response = json.loads(self.__webRequest(url))
