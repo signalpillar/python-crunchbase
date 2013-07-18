@@ -62,6 +62,14 @@ class CrunchBase:
       print 'HTTPError calling ' + url
       return None
 
+
+  def search(self, query, page = 1):
+    '''This returns result of search query in JSON format'''
+    url = API_URL + 'search.js?api_key=' + self.api_key + '&query=' + query + '&page=' + page
+    response = json.loads(self.__webRequest(url))
+    return response
+
+
   def __getJsonData(self, namespace, query=""):
     # Replace spaces and non-ASCII chars
     query = query.replace(" ", "+")
@@ -71,6 +79,10 @@ class CrunchBase:
     if response is not None:
       response = json.loads(response, strict=False)
     return response
+
+  def getData(self, namespace, query=""):
+    result = self.__getJsonData(namespace, "/%s" % query)
+    return result
 
   def getCompanyData(self, name):
     '''This returns the data about a company in JSON format.'''
