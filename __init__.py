@@ -26,18 +26,39 @@ API_URL      = API_BASE_URL + "v" + "/" + API_VERSION + "/"
 
 class CrunchBase:
 
-  def __init__(self, api_key):
-    self.api_key = api_key
+  def __init__(self, api_key, cache = {}):
+      self.api_key = api_key
+      self.__history = cache
 
   def __webRequest(self, url):
     print 'Making request to:'
     print url
     try:
-      response = urllib2.urlopen(url)
-      result = response.read()
-      return result
+      opener = urllib2.build_opener(NotModifiedHandler())
+      req = urllib2.Request(url)
+
+      if self.__history.has_key(url):
+        print 'Adding ETag to request header: ' + self.__history[url]['etag']
+        req.add_header("If-None-Match", self.__history[url]['etag'])
+        req.add_header("If-Modified-Since", self.__history[url]['last_modified'])
+
+
+      url_handle = opener.open(req)
+
+      if hasattr(url_handle, 'code') and url_handle.code == 304:
+        return self.__history[url]['response']
+
+      else:
+        headers = url_handle.info()
+        response = url_handle.read()
+        self.__history[url] = {
+          'etag': headers.getheader('ETag'),
+          'last_modified': headers.getheader('Last-Modified'),
+          'response': response
+        }
+        return response
+
     except urllib2.HTTPError as e:
-      #raise CrunchBaseError(e)
       print 'HTTPError calling ' + url
       return None
 
@@ -114,17 +135,17 @@ class CrunchBase:
   '''Below are CrunchBase functions written by Alexander Pease'''
   def listCompanyInvestors(self, name):
     '''Returns the list of financial organizations invested in a given company'''
-    
+
     company = self.getCompanyData(name)
     investors = []
     for rounds in company['funding_rounds']:
       for org in rounds['investments']:
         'CB returns angel investors differently, gives them None financial_org'
-        if org['financial_org'] is not None: 
+        if org['financial_org'] is not None:
           if org['financial_org']['name'] not in investors:
             investors.append(org['financial_org']['name'])
     return investors
-    
+
   def listInvestorPortfolio(self, orgName):
     '''Returns a list of companies invested in by orgName'''
 
@@ -144,3 +165,9 @@ class CrunchBaseResponse(object):
 class CrunchBaseError(Exception):
   pass
 
+class NotModifiedHandler(urllib2.BaseHandler):
+
+  def http_error_304(self, req, fp, code, message, headers):
+    addinfourl = urllib2.addinfourl(fp, headers, req.get_full_url())
+    addinfourl.code = code
+    return addinfourl
