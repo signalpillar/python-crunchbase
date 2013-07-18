@@ -28,7 +28,7 @@ class CrunchBase:
 
   def __init__(self, api_key, cache = {}):
       self.api_key = api_key
-      self.__history = cache
+      self.__cache = cache
 
   def __webRequest(self, url):
     print 'Making request to:'
@@ -37,21 +37,21 @@ class CrunchBase:
       opener = urllib2.build_opener(NotModifiedHandler())
       req = urllib2.Request(url)
 
-      if self.__history.has_key(url):
-        print 'Adding ETag to request header: ' + self.__history[url]['etag']
-        req.add_header("If-None-Match", self.__history[url]['etag'])
-        req.add_header("If-Modified-Since", self.__history[url]['last_modified'])
+      if self.__cache.has_key(url):
+        print 'Adding ETag to request header: ' + self.__cache[url]['etag']
+        req.add_header("If-None-Match", self.__cache[url]['etag'])
+        req.add_header("If-Modified-Since", self.__cache[url]['last_modified'])
 
 
       url_handle = opener.open(req)
 
       if hasattr(url_handle, 'code') and url_handle.code == 304:
-        return self.__history[url]['response']
+        return self.__cache[url]['response']
 
       else:
         headers = url_handle.info()
         response = url_handle.read()
-        self.__history[url] = {
+        self.__cache[url] = {
           'etag': headers.getheader('ETag'),
           'last_modified': headers.getheader('Last-Modified'),
           'response': response
@@ -61,6 +61,12 @@ class CrunchBase:
     except urllib2.HTTPError as e:
       print 'HTTPError calling ' + url
       return None
+
+  def getCache(self, url = None):
+    if url != None:
+      return self.__cache[url]
+    else:
+      return self.__cache
 
 
   def search(self, query, page = 1):
