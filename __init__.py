@@ -37,7 +37,7 @@ class CrunchBase:
       opener = urllib2.build_opener(NotModifiedHandler())
       req = urllib2.Request(url)
 
-      if self.__cache.has_key(url):
+      if url in self.__cache:
         print 'Adding ETag to request header: ' + self.__cache[url]['etag']
         req.add_header("If-None-Match", self.__cache[url]['etag'])
         req.add_header("If-Modified-Since", self.__cache[url]['last_modified'])
@@ -52,7 +52,7 @@ class CrunchBase:
         headers = url_handle.info()
         response = url_handle.read()
         self.__cache[url] = {
-          'etag': headers.getheader('ETag'),
+          'etag': headers.getheader('ETag').replace('"', ''),
           'last_modified': headers.getheader('Last-Modified'),
           'response': response
         }
