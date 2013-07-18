@@ -17,7 +17,7 @@ __version__ = '1.0.2'
 
 
 import urllib2
-import simplejson as json
+import json
 import unicodedata
 
 API_BASE_URL = "http://api.crunchbase.com/"
