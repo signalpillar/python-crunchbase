@@ -31,13 +31,12 @@ class CrunchBase:
       self.__cache = cache
 
   def __webRequest(self, url):
-    print 'Making request to:'
-    print url
+    print 'Making request to: ' + url
     try:
       opener = urllib2.build_opener(NotModifiedHandler())
       req = urllib2.Request(url)
 
-      if url in self.__cache:
+      if url in self.__cache and "etag" in self.__cache[url]:
         print 'Adding ETag to request header: ' + self.__cache[url]['etag']
         req.add_header("If-None-Match", self.__cache[url]['etag'])
         req.add_header("If-Modified-Since", self.__cache[url]['last_modified'])
@@ -51,11 +50,17 @@ class CrunchBase:
       else:
         headers = url_handle.info()
         response = url_handle.read()
-        self.__cache[url] = {
-          'etag': headers.getheader('ETag').replace('"', ''),
+
+        cache_data = {
+          'response': response,
           'last_modified': headers.getheader('Last-Modified'),
-          'response': response
+          'url': url.replace("?api_key=" + self.api_key, ''),
         }
+
+        if headers.getheader('ETag'):
+          cache_data['etag'] = headers.getheader('ETag').replace('"', '')
+
+        self.__cache[url] = cache_data
         return response
 
     except urllib2.HTTPError as e:
