@@ -15,7 +15,6 @@ Edits made by Alexander Pease <alexander@usv.com> to...
 __author__  = 'Apurva Mehta'
 __version__ = '1.0.2'
 
-
 import urllib2
 import json
 import unicodedata
@@ -36,17 +35,19 @@ class CrunchBase:
       opener = urllib2.build_opener(NotModifiedHandler())
       req = urllib2.Request(url)
 
-      if url in self.__cache and "etag" in self.__cache[url]:
-        print 'Adding ETag to request header: ' + self.__cache[url]['etag']
-        req.add_header("If-None-Match", self.__cache[url]['etag'])
-        req.add_header("If-Modified-Since", self.__cache[url]['last_modified'])
-
+      if url in self.__cache:
+        if 'etag' in self.__cache[url]:
+          print 'Adding ETag to request header: ' + self.__cache[url]['etag']
+          req.add_header("If-None-Match", self.__cache[url]['etag'])
+        if 'last_modified' in self.__cache[url]:
+          print 'Adding Last-Modified to request header: ' + self.__cache[url]['last_modified']
+          req.add_header("If-Modified-Since", self.__cache[url]['last_modified'] )
 
       url_handle = opener.open(req)
 
       if hasattr(url_handle, 'code') and url_handle.code == 304:
+        print 'Got 304 response, no body send'
         return self.__cache[url]['response']
-
       else:
         headers = url_handle.info()
         response = url_handle.read()
@@ -56,6 +57,9 @@ class CrunchBase:
           'last_modified': headers.getheader('Last-Modified'),
           'url': url.replace("?api_key=" + self.api_key, ''),
         }
+
+        if headers.getheader('Last-Modified'):
+          cache_data['last_modified'] = headers.getheader('Last-Modified')
 
         if headers.getheader('ETag'):
           cache_data['etag'] = headers.getheader('ETag').replace('"', '')
