@@ -40,11 +40,8 @@ class CrunchBase:
           print 'Adding ETag to request header: ' + self.__cache[url]['etag']
           req.add_header("If-None-Match", self.__cache[url]['etag'])
         if 'last_modified' in self.__cache[url]:
-          last_modified = self.__cache[url]['last_modified']
-          if not isinstance(last_modified, str):
-            last_modified = last_modified.strftime('%a, %d %b %Y %T GMT')
-          print 'Adding Last-Modified to request header: ' + last_modified
-          req.add_header("If-Modified-Since", last_modified )
+          print 'Adding Last-Modified to request header: ' + self.__cache[url]['last_modified']
+          req.add_header("If-Modified-Since", self.__cache[url]['last_modified'] )
 
       url_handle = opener.open(req)
 
