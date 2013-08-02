@@ -70,9 +70,8 @@ class CrunchBase:
                         headers.getheader('Last-Modified')
 
                 if headers.getheader('ETag'):
-                    cache_data['etag'] = headers
-                    .getheader('ETag')
-                    .replace('"', '')
+                    cache_data['etag'] = headers \
+                        .getheader('ETag').replace('"', '')
 
                 self.__cache[url] = cache_data
                 return response
@@ -99,8 +98,8 @@ class CrunchBase:
 
         query = query.replace(' ', '+')
         query = unicodedata.normalize('NFKD',
-                                      query.decode('utf-8'))
-        .encode('ascii', 'ignore')
+                                      query.decode('utf-8')) \
+            .encode('ascii', 'ignore')
         url = API_URL + namespace + query + '.js?api_key='\
             + self.api_key
         response = self.__webRequest(url)
