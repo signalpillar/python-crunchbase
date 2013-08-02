@@ -15,8 +15,8 @@ Edits made by Alexander Pease <alexander@usv.com> to...
 
 """
 
-__author__ = 'Apurva Mehta'
-__version__ = '1.0.2'
+__author__ = 'Apurva Mehta, Patrick Reilly, Daniel Mendalka'
+__version__ = '1.0.3'
 
 import urllib2
 import json
