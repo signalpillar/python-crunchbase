@@ -1,4 +1,5 @@
-from crunchbase import CrunchBase #may be outdated. switched all code to __init__.py
+from crunchbase import CrunchBase
+# may be outdated. switched all code to __init__.py
 import doctest
 doctest.testfile('README.md', verbose=False)
 
@@ -13,7 +14,6 @@ print company['funding_rounds'][1]['investments']#['financial_org']
 #investors = cb.listCompanyInvestors('Fundly')
 #print investors
 
-investor  = cb.listInvestorPortfolio('Kapor Capital')
+investor = cb.listInvestorPortfolio('Kapor Capital')
 for i in investor:
-	print i
-
+    print i
