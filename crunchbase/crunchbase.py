@@ -89,7 +89,7 @@ class CrunchBase:
 
     def getPeople(self, **kwargs):
         """This returns result of people in JSON format. Optional: page,  order [created_at DESC/ASC, updated_at DESC/ASC]"""
-        extra_args = self.createQueryArgs( kwargs.items )
+        extra_args = self.createQueryArgs( kwargs )
         url = API_URL + 'people/?user_key='+ self.api_key + extra_args
         return json.loads(self.__webRequest(url))
 
@@ -116,7 +116,7 @@ class CrunchBase:
         return self.getSingleObjectForPath(path, 'acquisition')
 
     def getIPO(self, path):
-        """This returns result of a single product in JSON format"""
+        """This returns result of a single ipo in JSON format"""
         return self.getSingleObjectForPath(path, 'ipo')
 
     def getFundRaise(self, path):
