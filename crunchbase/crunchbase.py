@@ -5,6 +5,9 @@
 Python library for the CrunchBase api.
 Copyright (c) 2010 Apurva Mehta <mehta.apurva@gmail.com> for CrunchBase class
 
+Edit made by Brian Anglin <brianranglin@gmail.com> to...
+  * Update wrapper for API version 2.0 https://developer.crunchbase.com/docs
+
 Edits made by Alexander Pease <alexander@usv.com> to...
   * Ensure compliance with 2013 API key requirement
   * Fix namespace conventions (ex: 'Kapor Capital' is sent as 'kapor+capital')
@@ -15,15 +18,15 @@ Edits made by Alexander Pease <alexander@usv.com> to...
 
 """
 
-__author__ = 'Apurva Mehta, Patrick Reilly, Daniel Mendalka'
-__version__ = '1.0.3'
+__author__ = 'Brian Anglin, Apurva Mehta, Patrick Reilly, Daniel Mendalka'
+__version__ = '2.0.1'
 
 import urllib2
 import json
 import unicodedata
 
 API_BASE_URL = 'http://api.crunchbase.com/'
-API_VERSION = '1'
+API_VERSION = '2'
 API_URL = API_BASE_URL + 'v' + '/' + API_VERSION + '/'
 
 
@@ -80,122 +83,79 @@ class CrunchBase:
             print 'HTTPError calling ' + url
             return None
 
-    def getCache(self, url=None):
-        if url is not None:
-            return self.__cache[url]
-        else:
-            return self.__cache
+    def createQueryArgs(self, kwargs):
+        query_string = ''
+        for key, value in kwargs.items():
+            query_string = query_string + '&' + key + '=' + value
+        return query_string
 
-    def search(self, query, page='1'):
-        """This returns result of search query in JSON format"""
+    def getSingleObjectForPath(self, path, namespace):
+        """This returns result of a single path in JSON format"""
+        if not path.startswith(namespace+'/'):
+            path = namespace+'/'+path
+        url = API_URL + path + '/?user_key='+ self.api_key
+        return json.loads(self.__webRequest(url))
 
-        url = API_URL + 'search.js?api_key='
-        + self.api_key + '&query='\ + query + '&page=' + page
-        response = json.loads(self.__webRequest(url))
-        return response
+        return
+    def getOrganizations(self, query, **kwargs):
+        """This returns result of an organization search query in JSON format. Optional: name, domain_name, organization_types, location_uuids, category_uuids, page, order [created_at DESC/ASC, updated_at DESC/ASC]"""
+        extra_args = self.createQueryArgs(dict( {'query':query}.items() + kwargs.items() ))
+        url = API_URL + 'organizations/?user_key='+ self.api_key + extra_args
+        return json.loads(self.__webRequest(url))
 
-    def __getJsonData(self, namespace, query=''):
+    def getOrganization(self, path):
+        """This returns result of a single organization in JSON format"""
+        return self.getSingleObjectForPath(path, 'organization')
 
-        query = query.replace(' ', '+')
-        query = unicodedata.normalize('NFKD',
-                                      query.decode('utf-8')) \
-            .encode('ascii', 'ignore')
-        url = API_URL + namespace + query + '.js?api_key='\
-            + self.api_key
-        response = self.__webRequest(url)
-        if response is not None:
-            response = json.loads(response, strict=False)
-        return response
+    def getPeople(self, **kwargs):
+        """This returns result of people in JSON format. Optional: page,  order [created_at DESC/ASC, updated_at DESC/ASC]"""
+        extra_args = self.createQueryArgs( kwargs.items )
+        url = API_URL + 'people/?user_key='+ self.api_key + extra_args
+        return json.loads(self.__webRequest(url))
 
-    def getData(self, namespace, query=''):
-        result = self.__getJsonData(namespace, '/%s' % query)
-        return result
+    def getPerson(self, path):
+        """This returns result of a single person in JSON format"""
+        return self.getSingleObjectForPath(path, 'person')
 
-    def getCompanyData(self, name):
-        """This returns the data about a company in JSON format."""
+    def getProducts(self, **kwargs):
+        """This returns result of products in JSON format. Optional: page,  order [created_at DESC/ASC, updated_at DESC/ASC]"""
+        extra_args = self.createQueryArgs( kwargs )
+        url = API_URL + 'products/?user_key='+ self.api_key + extra_args
+        return json.loads(self.__webRequest(url))
 
-        result = self.__getJsonData('company', '/%s' % name)
-        return result
+    def getProduct(self, path):
+        """This returns result of a single product in JSON format"""
+        return self.getSingleObjectForPath(path, 'product')
 
-    def getPersonData(self, *args):
-        """This returns the data about a person in JSON format."""
+    def getFundingRound(self, path):
+        """This returns result of a single funding-round in JSON format"""
+        return self.getSingleObjectForPath(path, 'funding-round')
 
-        result = self.__getJsonData('person', '/%s' % '-'
-                                    .join(args).lower().replace(' ', '-'))
-        return result
+    def getAcquisition(self, path):
+        """This returns result of a single acquisition in JSON format"""
+        return self.getSingleObjectForPath(path, 'acquisition')
 
-    def getFinancialOrgData(self, orgName):
-        """ This returns the data about a financial organization
-        in JSON format."""
+    def getIPO(self, path):
+        """This returns result of a single product in JSON format"""
+        return self.getSingleObjectForPath(path, 'ipo')
 
-        result = self.__getJsonData('financial-organization', '/%s' % orgName)
-        return result
+    def getFundRaise(self, path):
+        """This returns result of a single fund-raise in JSON format"""
+      return self.getSingleObjectForPath(path, 'fund-raise')
 
-    def getProductData(self, name):
-        """This returns the data about a product in JSON format."""
+    def getLocations(self, **kwargs):
+        """This returns result of locations in JSON format. Optional: page"""
+        extra_args = self.createQueryArgs( kwargs )
+        url = API_URL + 'locations/?user_key='+ self.api_key + extra_args
+        return json.loads(self.__webRequest(url))
 
-        result = self.__getJsonData('product', name)
-        return result
+    def getCategories(self, **kwargs):
+        """This returns result of categories in JSON format. Optional: page"""
+        extra_args = self.createQueryArgs( kwargs )
+        url = API_URL + 'categories/?user_key='+ self.api_key + extra_args
+        return json.loads(self.__webRequest(url))
 
-    def getServiceProviderData(self, name):
-        """This returns the data about a service provider in JSON format."""
-
-        result = self.__getJsonData('service-provider', '/%s' % name)
-        return result
-
-    def listCompanies(self):
-        """This returns the list of companies in JSON format."""
-
-        result = self.__getJsonData('companies')
-        return result
-
-    def listPeople(self):
-        """This returns the list of people in JSON format."""
-
-        result = self.__getJsonData('people')
-        return result
-
-    def listFinancialOrgs(self):
-        """This returns the list of financial organizations in JSON format."""
-
-        result = self.__getJsonData('financial-organizations')
-        return result
-
-    def listProducts(self):
-        """This returns the list of products in JSON format."""
-
-        result = self.__getJsonData('products')
-        return result
-
-    def listServiceProviders(self):
-        """This returns the list of service providers in JSON format."""
-
-        result = self.__getJsonData('service-providers')
-        return result
-
-    def listCompanyInvestors(self, name):
-        """Returns the list of financial organizations
-        invested in a given company"""
-
-        company = self.getCompanyData(name)
-        investors = []
-        for rounds in company['funding_rounds']:
-            for org in rounds['investments']:
-                if org['financial_org'] is not None:
-                    if org['financial_org']['name'] not in investors:
-                        investors.append(org['financial_org']['name'])
-        return investors
-
-    def listInvestorPortfolio(self, orgName):
-        """Returns a list of companies invested in by orgName"""
-
-        investor = self.getFinancialOrgData(orgName)
-        portfolio = []
-        for investment in investor['investments']:
-            portfolio.append(investment['funding_round']['company']['name'])
-        return portfolio
-
-
+# organization/dropbox
 class CrunchBaseResponse(object):
 
     def __init__(self, **kwargs):
@@ -208,7 +168,6 @@ class CrunchBaseResponse(object):
 class CrunchBaseError(Exception):
 
     pass
-
 
 class NotModifiedHandler(urllib2.BaseHandler):
 

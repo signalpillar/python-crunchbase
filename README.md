@@ -1,7 +1,7 @@
 crunchbase
 ==========
  
-This is a Python Library for the Crunchbase API.
+This is a Python Library for the Crunchbase 2.0 API.
 
 
 API Documentation
@@ -9,20 +9,56 @@ API Documentation
 
 The CrunchBase API provides a RESTful interface to the data found on CrunchBase. The response is in JSON format.
 
-Register
+###Register
 
 Follow the steps below to start using the CrunchBase API:
 
-* Register for a user account.
-* Apply for an API key.
-* Browse the documentation.
-* Join a discussion in the forums.
+* [Sign Up](https://developer.crunchbase.com/signup)
+* Login & [get API key](https://developer.crunchbase.com/admin)
+* [Browse the documentation.](https://developer.crunchbase.com/docs)
 
-API Usage Terms
+###Setup
 
-The CrunchBase API can currently be accessed without an API key. Going forward, we'd like to encourage developers to register and sign up for an API access key and start using it in every call made to the API. We will require usage of the access key beginning December 1, 2012.
-
+    pip install git+git://github.com/anglinb/python-crunchbase
 
 
-http://developer.crunchbase.com/io-docs
+###Up & Running
 
+Import Crunchbase then intialize the Crunchbase object with your api key.
+
+    from spread.crunchbase import CrunchBase
+    cb = CrunchBase('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+
+Here is an example of searching for an organization. 
+
+	cb.getOrganizations('Dropbox', page='1', order=...)
+
+This returns the result of an organization search query in JSON format. The keyword arguments `(page, order, ... )` will be translated into GET variables and passed along with the request. Check the documentation to find which arguments are availible for which API endpoint. 
+
+Now you are ready to perform any of the following queries against the Crunchbase 2.0 API
+
+    getOrganizations(query) #This returns result of an organization search query in JSON format.
+
+    getOrganization(path) #This returns result of an organization search query in JSON format.
+
+    getPeople() #This returns result of people in JSON format.
+
+    getPerson(path) #This returns result of a single person
+
+    getProducts() This returns result of products in JSON format.
+
+    ... 
+
+Check crunchbase/crunchbase.py for a list of all the of the possible functions. These methods are in order with the ones found in the [Crunchbase API Documentation](https://developer.crunchbase.com/docs). 
+
+###API Usage Terms
+
+* [General TOS](http://info.crunchbase.com/docs/terms-of-service/)
+* [License: CC-BY-NC (Creative Commons Attribution-NonCommercial License)](http://creativecommons.org/licenses/by-nc/4.0/)
+
+
+[https://developer.crunchbase.com/](https://developer.crunchbase.com/)
+
+###Library License
+
+[WTFPL](http://www.wtfpl.net/)
