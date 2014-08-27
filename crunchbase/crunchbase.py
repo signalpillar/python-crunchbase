@@ -42,18 +42,6 @@ class CrunchBase:
             opener = urllib2.build_opener(NotModifiedHandler())
             req = urllib2.Request(url)
 
-            if url in self.__cache:
-                if 'etag' in self.__cache[url]:
-                    print 'Adding ETag to request header: '\
-                        + self.__cache[url]['etag']
-                    req.add_header('If-None-Match',
-                                   self.__cache[url]['etag'])
-                if 'last_modified' in self.__cache[url]:
-                    print 'Adding Last-Modified to request header: '\
-                        + self.__cache[url]['last_modified']
-                    req.add_header('If-Modified-Since',
-                                   self.__cache[url]['last_modified'])
-
             url_handle = opener.open(req)
 
             if hasattr(url_handle, 'code') and url_handle.code == 304:
@@ -65,16 +53,8 @@ class CrunchBase:
 
                 cache_data = {
                     'response': response,
-                    'last_modified': headers.getheader('Last-Modified'),
-                    'url': url.replace('?api_key=' + self.api_key, '')}
-
-                if headers.getheader('Last-Modified'):
-                    cache_data['last_modified'] = \
-                        headers.getheader('Last-Modified')
-
-                if headers.getheader('ETag'):
-                    cache_data['etag'] = headers \
-                        .getheader('ETag').replace('"', '')
+                    'url': url.replace('?api_key=' + self.api_key, '')
+                }
 
                 self.__cache[url] = cache_data
                 return response
@@ -141,7 +121,7 @@ class CrunchBase:
 
     def getFundRaise(self, path):
         """This returns result of a single fund-raise in JSON format"""
-      return self.getSingleObjectForPath(path, 'fund-raise')
+        return self.getSingleObjectForPath(path, 'fund-raise')
 
     def getLocations(self, **kwargs):
         """This returns result of locations in JSON format. Optional: page"""
