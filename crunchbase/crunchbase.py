@@ -22,6 +22,7 @@ __author__ = 'Brian Anglin, Apurva Mehta, Patrick Reilly, Daniel Mendalka'
 __version__ = '2.0.1'
 
 import urllib2
+from urllib import quote_plus
 import json
 import unicodedata
 
@@ -66,7 +67,7 @@ class CrunchBase:
     def createQueryArgs(self, kwargs):
         query_string = ''
         for key, value in kwargs.items():
-            query_string = query_string + '&' + key + '=' + value
+            query_string = query_string + '&' + quote_plus(key) + '=' + quote_plus(value)
         return query_string
 
     def getSingleObjectForPath(self, path, namespace):
