@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-long_description = open('README.md').read()
+long_description = open('README.txt').read()
 
 setup(name="python-crunchbase",
       version="1.0.1",

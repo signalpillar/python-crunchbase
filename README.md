@@ -26,7 +26,7 @@ Follow the steps below to start using the CrunchBase API:
 
 Import Crunchbase then intialize the Crunchbase object with your api key.
 
-    from spread.crunchbase import CrunchBase
+    from crunchbase import CrunchBase
     cb = CrunchBase('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
 
 Here is an example of searching for an organization. 
