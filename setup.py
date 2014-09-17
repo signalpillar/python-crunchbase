@@ -3,7 +3,7 @@ from distutils.core import setup
 long_description = open('README.txt').read()
 
 setup(name="python-crunchbase",
-      version="1.0.1",
+      version="1.0.2",
       packages=["crunchbase"],
       description="Libraries for interacting with the Crunchbase 2.0 API",
       author="Brian Anglin <brianranglin@gmail.com>",
@@ -11,7 +11,7 @@ setup(name="python-crunchbase",
       license="WTFPL",
       url="https://github.com/anglinb/python-crunchbase",
       long_description=long_description,
-      download_url = 'https://github.com/anglinb/python-crunchbase/tarball/1.0.1',
+      download_url = 'https://github.com/anglinb/python-crunchbase/tarball/1.0.2',
       platforms=["any"],
       classifiers=["Intended Audience :: Developers",
                    "Natural Language :: English",
