@@ -75,8 +75,7 @@ class CrunchBase:
 
                 self.__cache[url] = cache_data
                 return response
-        except urllib2.HTTPError, e:
-
+        except urllib2.HTTPError:
             print 'HTTPError calling ' + url
             return None
 
@@ -89,8 +88,7 @@ class CrunchBase:
     def search(self, query, page='1'):
         """This returns result of search query in JSON format"""
 
-        url = API_URL + 'search.js?api_key='
-        + self.api_key + '&query=' + query + '&page=' + page
+        url = API_URL + 'search.js?api_key=' + self.api_key + '&query=' + query + '&page=' + page
         response = json.loads(self.__webRequest(url))
         return response
 
