@@ -4,7 +4,7 @@ long_description = open('README.md').read()
 
 setup(name="python-crunchbase",
       version="2.0.1",
-      py_modules=["crunchbase"],
+      packages=["crunchbase"],
       description="Libraries for interacting with the Crunchbase 2.0 API",
       author="Brian Anglin <brianranglin@gmail.com>",
       author_email="brianranglin@gmail.com",
