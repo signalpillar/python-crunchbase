@@ -90,7 +90,7 @@ class CrunchBase:
         """This returns result of search query in JSON format"""
 
         url = API_URL + 'search.js?api_key='
-        + self.api_key + '&query='\ + query + '&page=' + page
+        + self.api_key + '&query=' + query + '&page=' + page
         response = json.loads(self.__webRequest(url))
         return response
 
